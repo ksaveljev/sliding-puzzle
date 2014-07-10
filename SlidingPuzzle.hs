@@ -37,7 +37,7 @@ m2v n row column = n * row + column
 
 -- | Convert vector index to matrix indicies
 v2m :: Int -> Int -> (Int, Int)
-v2m n index = (index `div` n, index `mod` n)
+v2m n index = index `quotRem` n
 
 -- | Given the list of tiles generate our board representation
 boardFromList :: [Int] -> Board
@@ -99,8 +99,9 @@ manhattan :: Int -> Int -> Int -> Int
 manhattan tile n index = if tile == 0 then 0 else rowDistance + columnDistance
     where
         (row, column) = v2m n index
-        rowDistance = abs (row - ((tile - 1) `div` n))
-        columnDistance = abs (column - ((tile - 1) `mod` n))
+        (tileRow, tileColumn) = (tile - 1) `quotRem` n
+        rowDistance = abs (row - tileRow)
+        columnDistance = abs (column - tileColumn)
 
 -- | Manhattan distance of the entire board
 boardDistance :: BoardDimension -> Board -> Int
