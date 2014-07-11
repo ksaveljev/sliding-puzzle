@@ -1,6 +1,7 @@
-import SlidingPuzzle
 import Control.Monad (liftM)
 import System.Environment (getArgs)
+
+import SlidingPuzzle
 
 main :: IO()
 main = do
@@ -8,4 +9,4 @@ main = do
     let solution = solveSlidingPuzzle puzzle
     case solution of
         Nothing -> print "Given puzzle cannot be solved"
-        Just path -> do print path; putStrLn $ "Number of steps to solve: " ++ (show $ length path)
+        Just path -> do print path; putStrLn $ "Number of steps to solve: " ++ show (length path)
