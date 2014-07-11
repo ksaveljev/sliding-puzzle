@@ -65,11 +65,15 @@ isSolutionFound :: PuzzleState -> Bool
 isSolutionFound puzzleState = distance puzzleState == 0
 
 -- | Update puzzle state after switching empty tile with tile found at position (row, column)
+-- In order to update manhattan distance of the entire board we no longer need to compute manhattan
+-- distance for every tile, as we only move 2 tiles, one of them is an empty tile which always has
+-- manhattan distance equal to 0. So we take old distance, subtract manhattan distance of the tile
+-- we are moving, move the tile, add new manhattan distance of that tile to the board distance.
 updatePuzzleState :: PuzzleState -> Int -> Int -> PuzzleState
 updatePuzzleState puzzleState row column =
     puzzleState { board = board'
                 , emptyTile = k
-                , distance = boardDistance n board'
+                , distance = newDistance
                 , moves = moves puzzleState + 1
                 , previous = Just puzzleState }
     where
@@ -77,6 +81,7 @@ updatePuzzleState puzzleState row column =
         k = m2v n row column
         b = board puzzleState
         board' = b // [(emptyTile puzzleState, b ! k), (k, 0)]
+        newDistance = distance puzzleState - manhattan (b ! k) n k + manhattan (b ! k) n (emptyTile puzzleState)
 
 -- | Update puzzle state if the empty tile is not moving off the board
 makeMove :: PuzzleState -> MoveDirection -> Maybe PuzzleState
