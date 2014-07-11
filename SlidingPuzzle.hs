@@ -1,3 +1,5 @@
+module SlidingPuzzle (solveSlidingPuzzle) where
+
 import Data.Vector (Vector, (!), (//))
 import qualified Data.Vector as V
 import Data.Maybe (fromJust, mapMaybe)
@@ -5,7 +7,6 @@ import Data.List (elemIndex)
 import qualified Data.Set as S
 import Control.Monad.Reader
 import Control.Monad.State.Lazy
-import System.Environment (getArgs)
 
 -- | Generalizing this solution for different dimensions of the board.
 -- It can be 2x2, 3x3, 4x4 and so on.
@@ -148,13 +149,13 @@ findSolution puzzleState deapthLimit =
     let solution = execStateT (runStateT (runReaderT search deapthLimit) (S.singleton (board puzzleState))) puzzleState
     in case solution of
         Just finalState -> Just $ solutionPath finalState
-        Nothing -> findSolution puzzleState (deapthLimit + 3)
+        Nothing -> findSolution puzzleState (deapthLimit + 5)
 
 -- | Solve the sliding puzzle.
 -- Make sure that the given puzzle is solvable and if it is then start the IDA* search.
 -- If the search is unsuccessful then increase the deapth limit and repeat the search.
 -- Do it until the solution is finally found.
-solveSlidingPuzzle :: String -> Maybe [Board]
+solveSlidingPuzzle :: String -> Maybe [[Int]]
 solveSlidingPuzzle input =
     let (n, tiles) = parseInput input
         solvable = isSolvable n tiles
@@ -162,13 +163,5 @@ solveSlidingPuzzle input =
         emptyTileLocation = fromJust $ V.elemIndex 0 initialBoard
         puzzleState = PuzzleState initialBoard n emptyTileLocation (boardDistance n initialBoard) 0 Nothing
     in if solvable
-       then findSolution puzzleState (distance puzzleState)
+       then fmap (map V.toList) $ findSolution puzzleState (distance puzzleState)
        else Nothing
-
-main :: IO()
-main = do
-    puzzle <- liftM (!! 0) getArgs >>= readFile
-    let solution = solveSlidingPuzzle puzzle
-    case solution of
-        Nothing -> print "Given puzzle cannot be solved"
-        Just path -> print path
