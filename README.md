@@ -7,6 +7,11 @@ This solution is based on the post made by Jeffrey Rosenbluth which can be found
 
 The blog post describes the solution using A* search. My solution went a bit other way and solved it using the IDA* search.
 
+=====================
+    cabal sandbox init
+    cabal build
+    cabal run simple-solver input
+    cabal run gif-solver input
 
 [SlidingPuzzle.hs](SlidingPuzzle.hs) - the solver
 
